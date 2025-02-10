@@ -1,4 +1,11 @@
-import { pgTable, text, serial } from "drizzle-orm/pg-core";
+import {
+    pgTable,
+    text,
+    serial,
+    pgEnum,
+    integer,
+    timestamp,
+} from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { phd } from "./admin.ts";
 
@@ -27,4 +34,31 @@ export const phdApplications = pgTable("phd_applications", {
         .array()
         .notNull()
         .default(sql`'{}'::text[]`),
+});
+
+export const phdApplicationStatusType = pgEnum("phd_application_status_type", [
+    "approved",
+    "rejected",
+    "requested",
+    "pending",
+]);
+
+export const phdApplicationReviewerType = pgEnum(
+    "phd_application_reviewer_type",
+    ["DAC_Member", "DRC_Member", "DRC_Convenor"]
+);
+
+export const phdApplicationStatus = pgTable("phd_application_status", {
+    id: serial("id").primaryKey(),
+    applicationId: integer("application_id")
+        .notNull()
+        .references(() => phdApplications.applicationId, {
+            onDelete: "cascade",
+        }),
+    reviewer: phdApplicationReviewerType("reviewer").notNull(),
+    status: phdApplicationStatusType("status").notNull().default("pending"),
+    comment: text("comment"),
+    createdAt: timestamp("created_at")
+        .notNull()
+        .default(sql`now()`),
 });
