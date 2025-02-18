@@ -11,5 +11,5 @@ export default defineConfig({
         host: "localhost",
         port: env.PGPORT,
         ssl: false,
-    },
+    },  
 });

@@ -30,3 +30,6 @@ bun.lockb
 package-lock.json
 
 
+# ignore these files
+vite.config.ts
+
