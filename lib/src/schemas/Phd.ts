@@ -26,3 +26,9 @@ export const getQualifyingExamFormParamsSchema = z.object({
 });
 
 export type GetQualifyingExamFormParams = z.infer<typeof getQualifyingExamFormParamsSchema>;
+
+export const deletePhdCourseBodySchema = z.object({
+    studentEmail: z.string(),
+    courseId: z.string(),
+});
+export type DeletePhdCourseBody = z.infer<typeof deletePhdCourseBodySchema>;
