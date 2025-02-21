@@ -13,6 +13,8 @@ import MemberDetailsView from "./views/Admin/Members/[member]";
 import RoleDetailsView from "./views/Admin/Roles/[role]";
 import { Toaster } from "./components/ui/sonner";
 import RolesView from "./views/Admin/Roles";
+import FacultyLayout from "./layouts/CourseHandout/FacultyLayout";
+import CourseHandouts from "./views/Faculty/FacultyView";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,9 @@ const App = () => {
                     />
                     <Route path="roles" element={<RolesView />} />
                     <Route path="roles/:role" element={<RoleDetailsView />} />
+                    <Route path="course-handouts" element={<FacultyLayout />}>
+                      <Route index element={<CourseHandouts />} />
+                </Route>   
                   </Route>
                 </Route>
               </Routes>
