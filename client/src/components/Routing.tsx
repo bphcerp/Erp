@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/Auth";
 import AdminLayout from "@/layouts/Admin";
 import QpReviewLayout from "@/layouts/QpReview";
-import PhdLayout from "@/layouts/Phd/Phd";
+import PhdLayout from "@/layouts/Phd";
 import Admin from "@/views/Admin";
 import MembersView from "@/views/Admin/Members";
 import MemberDetailsView from "@/views/Admin/Members/[member]";
