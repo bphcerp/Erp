@@ -8,6 +8,13 @@ import assignNotionalSupervisor from "./assignNotionalSupervisor.ts"
 import getQualifyingExamForm from "./getQualifyingExamForm.ts"
 import updateDeadlineRouter from "./updateDeadline.ts"
 import generateCourseworkForm from "./generateCourseworkForm.ts"
+import updateQualifyingExamDeadline from "./updateQualifyingExamDeadline.ts";
+import updateQePassFailStatus from "./updateQePassFailStatus.ts";
+import getPhdThatFilledQualifyingExamApplicationForm from "./getPhdThatFilledQualifyingExamApplicationForm.ts";
+import getPhdThatPassedRecently from "./getPhdThatPassedRecently.ts";
+import updatePassingDatesOfPhd from "./updatePassingDatesOfPhd.ts";
+import updateProposalDeadline from "./updateProposalDeadline.ts";
+import getPhdDataToGeneratePhdQualifyingExamForm from "./getPhdDataToGeneratePhdQualifyingExamForm.ts";
 
 
 const router = express.Router();
@@ -21,5 +28,13 @@ router.use('/assignNotionalSupervisor', assignNotionalSupervisor);
 router.use('/getQualifyingExamForm', getQualifyingExamForm);
 router.use('/updateDeadline', updateDeadlineRouter);
 router.use('/generateCourseworkForm', generateCourseworkForm);
+router.use('/updateQualifyingExamDeadline', updateQualifyingExamDeadline);
+router.use('/updateQePassFailStatus', updateQePassFailStatus);
+router.use('/generateCourseworkForm', generateCourseworkForm);
+router.use('/getPhdThatFilledQualifyingExamApplicationForm', getPhdThatFilledQualifyingExamApplicationForm);
+router.use('/updatePassingDatesOfPhd', updatePassingDatesOfPhd);
+router.use('/getPhdThatPassedRecently', getPhdThatPassedRecently);
+router.use('/updateProposalDeadline', updateProposalDeadline);
+router.use('/getPhdDataToGeneratePhdQualifyingExamForm', getPhdDataToGeneratePhdQualifyingExamForm);
 
 export default router;
