@@ -15,6 +15,9 @@ import getPhdThatPassedRecently from "./getPhdThatPassedRecently.ts";
 import updatePassingDatesOfPhd from "./updatePassingDatesOfPhd.ts";
 import updateProposalDeadline from "./updateProposalDeadline.ts";
 import getPhdDataToGeneratePhdQualifyingExamForm from "./getPhdDataToGeneratePhdQualifyingExamForm.ts";
+import getSuggestedDacMember from "./getSuggestedDacMember.ts";
+import suggestTwoBestDacMember from "./suggestTwoBestDacMember.ts";
+import updateFinalDac from "./updateFinalDac.ts";
 
 
 const router = express.Router();
@@ -36,5 +39,8 @@ router.use('/updatePassingDatesOfPhd', updatePassingDatesOfPhd);
 router.use('/getPhdThatPassedRecently', getPhdThatPassedRecently);
 router.use('/updateProposalDeadline', updateProposalDeadline);
 router.use('/getPhdDataToGeneratePhdQualifyingExamForm', getPhdDataToGeneratePhdQualifyingExamForm);
+router.use('/getSuggestedDacMember', getSuggestedDacMember);
+router.use('/updateFinalDac', updateFinalDac);
+router.use('/suggestTwoBestDacMember', suggestTwoBestDacMember);
 
 export default router;

@@ -9,6 +9,23 @@ export const updateQualificationDateSchema = z.record(z.string(), z.string().dat
 
 export type UpdateQualificationDateBody = z.infer<typeof updateQualificationDateSchema>;
 
+export const suggestDacMembersSchema = z.object({
+    dacMembers: z.array(z.string().email()).length(5, "Exactly 5 DAC members are required"),
+});
+export type SuggestDacMembersBody = z.infer<typeof suggestDacMembersSchema>;
+
+export const selectDacSchema = z.object({
+    email: z.string().email(),
+    selectedDacMembers: z.array(z.string().email()).length(2),
+});
+export type SelectDacBody = z.infer<typeof selectDacSchema>;
+
+export const updateFinalDacSchema = z.object({
+    email: z.string().email(),
+    finalDacMembers: z.array(z.string().email()).length(2),
+});
+export type UpdateFinalDacBody = z.infer<typeof updateFinalDacSchema>;
+
 export const uploadApplicationSchema = z.object({
     fileUrl: z.string().url(),
     formName: z.string().min(1),

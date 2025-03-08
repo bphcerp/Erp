@@ -115,6 +115,7 @@ export const phd = pgTable("phd", {
         withTimezone: true,
         mode: "date",
     }).default(sql`NULL`),
+    suggestedDacMembers: text("suggested_dac_members").array().default(sql`'{}'::text[]`),
 });
 
 export const staff = pgTable("staff", {
