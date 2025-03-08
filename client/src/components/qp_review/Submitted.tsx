@@ -25,4 +25,8 @@ function Submitted({ course, status }: SubmittedProps) {
   );
 }
 
+<<<<<<< HEAD
 export default Submitted;
+=======
+export default Submitted;
+>>>>>>> main

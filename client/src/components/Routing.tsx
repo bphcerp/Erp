@@ -1,7 +1,10 @@
 import { useAuth } from "@/hooks/Auth";
 import AdminLayout from "@/layouts/Admin";
 import QpReviewLayout from "@/layouts/QpReview";
+<<<<<<< HEAD
 import PhdLayout from "@/layouts/Phd/Phd";
+=======
+>>>>>>> main
 import Admin from "@/views/Admin";
 import MembersView from "@/views/Admin/Members";
 import MemberDetailsView from "@/views/Admin/Members/[member]";
@@ -12,12 +15,15 @@ import FicSubmissionView from "@/views/QpReview/FicSubmission";
 import { permissions } from "lib";
 import { Computer, FileText } from "lucide-react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+<<<<<<< HEAD
 import Phd from "@/views/Phd";
 import NotionalSupervisorLayout from "@/layouts/Phd/NotionalSupervisor";
 import UpdateGrade from "@/views/Phd/NotionalSupervisor/UpdateGrade";
 import CourseworkForm from "@/views/Phd/DrcConvenor/CourseworkForm";
 import UpdateQualifyingExamDeadline from "@/views/Phd/DrcConvenor/UpdateQualifyingExamDeadline";
 import FormDeadline from "@/views/Phd/Student/FormDeadline";
+=======
+>>>>>>> main
 
 const adminModulePermissions = [
   permissions["/admin/member/search"],
@@ -25,12 +31,15 @@ const adminModulePermissions = [
   permissions["/admin/role"],
 ];
 
+<<<<<<< HEAD
 const phdModulePermissions = [
   permissions["notional-supervisor"],
   permissions["drc-convenor"],
   permissions["phd-student"],
 ];
 
+=======
+>>>>>>> main
 const qpReviewModulePermissions: string[] = [];
 
 const Routing = () => {
@@ -110,6 +119,7 @@ const Routing = () => {
                 <Route path="ficSubmission" element={<FicSubmissionView />} />
               </Route>
             )}
+<<<<<<< HEAD
 
             {checkAccessAnyOne(phdModulePermissions) && (
               <Route path="/phd" element={<PhdLayout />}>
@@ -138,6 +148,8 @@ const Routing = () => {
                 )}
               </Route>
             )}
+=======
+>>>>>>> main
           </>
         )}
       </Routes>

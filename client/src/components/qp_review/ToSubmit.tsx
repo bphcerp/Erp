@@ -102,4 +102,8 @@ const ToSubmit = ({ course, deadline }: ToSubmitProps) => {
   );
 };
 
+<<<<<<< HEAD
 export default ToSubmit;
+=======
+export default ToSubmit;
+>>>>>>> main
