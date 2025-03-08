@@ -93,8 +93,13 @@ export const phd = pgTable("phd", {
         withTimezone: true,
         mode: "date",
     }).default(sql`NULL`),
-    qualifyingArea1: text("qualifying_area_1"),
-    qualifyingArea2: text("qualifying_area_1"),
+    qualifyingArea1: text("qualifying_area_1").default(sql`NULL`),
+    qualifyingArea2: text("qualifying_area_1").default(sql`NULL`),
+    numberOfQeApplication : integer("number_of_qe_application").default(0),
+    qualificationDate:timestamp("qualification_date", {
+        withTimezone: true,
+        mode: "date",
+    }).default(sql`NULL`),
 });
 
 export const staff = pgTable("staff", {
