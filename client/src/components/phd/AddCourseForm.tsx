@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import * as z from "zod";
@@ -9,7 +8,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -32,7 +30,7 @@ export function AddCourseForm({ studentEmail }: { studentEmail: string }) {
   });
   const submitMutation = useMutation({
     mutationFn: async (data: FormValues) => {
-      api.post("/phd/notionalSupervisor/addCourse", {
+      await api.post("/phd/notionalSupervisor/addCourse", {
         studentEmail,
         courses: [data],
       });

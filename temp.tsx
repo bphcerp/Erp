@@ -1,12 +1,14 @@
-import { AppSidebar, type SidebarMenuGroup } from "@/components/AppSidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/Auth";
 import api from "@/lib/axios-instance";
 import { LOGIN_ENDPOINT } from "@/lib/constants";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { libTest } from "lib";
+import { Computer, Book } from "lucide-react";
 
-function Home({ sidebarItems }: { sidebarItems?: SidebarMenuGroup[] }) {
-  const { authState, setNewAuthToken, logOut } = useAuth();
+function Home() {
+  const { authState, updateAuthState, logOut, checkAccess } = useAuth();
 
   const onSuccess = (credentialResponse: CredentialResponse) => {
     api
@@ -14,8 +16,7 @@ function Home({ sidebarItems }: { sidebarItems?: SidebarMenuGroup[] }) {
         token: credentialResponse.credential,
       })
       .then((response) => {
-        console.log(response.data.token);
-        setNewAuthToken(response.data.token);
+        updateAuthState(response.data.token);
       })
       .catch(() => {
         // notify login failed
@@ -24,7 +25,32 @@ function Home({ sidebarItems }: { sidebarItems?: SidebarMenuGroup[] }) {
 
   return (
     <>
-      <AppSidebar items={sidebarItems ?? []} />
+      <AppSidebar
+        items={
+          authState
+            ? [
+                {
+                  title: "Modules",
+                  items: checkAccess("admin")
+                    ? [
+                        {
+                          title: "Admin",
+                          icon: <Computer />,
+                          url: "/admin",
+                        },
+                        // Keeping PhD related items in admin for now
+                        {
+                          title: "PhD",
+                          icon: <Book />,
+                          url: "/phd",
+                        },
+                      ]
+                    : [],
+                },
+              ]
+            : []
+        }
+      />
       <div className="mx-auto flex max-w-5xl flex-1 flex-col items-center justify-center gap-8 p-8 text-center">
         {!authState ? (
           <GoogleLogin onSuccess={onSuccess} />
@@ -33,6 +59,7 @@ function Home({ sidebarItems }: { sidebarItems?: SidebarMenuGroup[] }) {
             <p className="whitespace-pre text-left font-mono">
               {JSON.stringify(authState, null, 4)}
             </p>
+            <p>{libTest("client")}</p>
             <Button className="self-center" onClick={() => logOut()}>
               Logout
             </Button>

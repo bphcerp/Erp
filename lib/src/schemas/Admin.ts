@@ -125,3 +125,21 @@ export const editDetailsBodySchema = z.intersection(
     ])
 );
 export type EditDetailsBody = z.infer<typeof editDetailsBodySchema>;
+
+export interface MemberDetailsResponse {
+    email: string;
+    type: (typeof userTypes)[number];
+    name: string | null;
+    roles: string[];
+    deactivated: boolean;
+    psrn?: string | null;
+    department?: string | null;
+    designation?: string[] | null;
+    room?: string | null;
+    phone?: string | null;
+    idNumber?: string | null;
+    erpId?: string | null;
+    instituteEmail?: string | null;
+    mobile?: string | null;
+    personalEmail?: string | null;
+}
