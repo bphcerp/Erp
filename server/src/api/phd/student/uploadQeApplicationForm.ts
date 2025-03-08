@@ -4,7 +4,7 @@ import { checkAccess } from "@/middleware/auth.ts";
 import db from "@/config/db/index.ts";
 import { phd } from "@/config/db/schema/admin.ts";
 import { phdDocuments } from "@/config/db/schema/phd.ts";
-import { eq } from "drizzle-orm";
+import { eq,sql  } from "drizzle-orm";
 import assert from "assert";
 import { phdSchemas } from "lib";
 
@@ -37,6 +37,7 @@ export default router.post(
             .set({
                 qualifyingArea1,
                 qualifyingArea2,
+                numberOfQeApplication: sql`${phd.numberOfQeApplication} + 1`, 
             })
             .where(eq(phd.email, email));
 
