@@ -14,9 +14,9 @@ router.get(
     checkAccess("supervisor-view-supervised-students"),
     asyncHandler(async (req, res) => {
         assert(req.user);
-        const supervisorEmail = req.user.email;  // Supervisor's email from auth
+        const supervisorEmail = req.user.email;
 
-        // Fetch PhD students under this supervisor
+    
         const students = await db
             .select({
                 email: phd.email,
