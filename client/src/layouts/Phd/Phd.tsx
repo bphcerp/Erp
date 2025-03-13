@@ -42,8 +42,13 @@ const NotionalSupervisorLayout = () => {
       items: [
         {
           title: "Exam Form Deadline",
-          icon: <PersonIcon />,
+          icon: <CalendarClockIcon />,
           url: "/phd/phd-student/form-deadline",
+        },
+        {
+          title: "Qualifying Exam Status",
+          icon: <ListBulletIcon />,
+          url: "/phd/phd-student/exam-status",
         },
       ],
     });

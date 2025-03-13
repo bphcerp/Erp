@@ -22,6 +22,7 @@ import UpdateGrade from "./views/Phd/NotionalSupervisor/UpdateGrade";
 import PhdLayout from "./layouts/Phd/Phd";
 import CourseworkForm from "./views/Phd/DrcConvenor/CourseworkForm";
 import UpdateQualifyingExamDeadline from "./views/Phd/DrcConvenor/UpdateQualifyingExamDeadline";
+import QualifyingExamStatus from "./views/Phd/Student/QualifyingExamStatus";
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,7 @@ const App = () => {
                     </Route>
                     <Route path="phd-student" element={<PhDStudentLayout />}>
                       <Route path="form-deadline" element={<FormDeadline />} />
+                      <Route path="exam-status" element={<QualifyingExamStatus />} />
                     </Route>
                   </Route>
                 </Route>
