@@ -2,7 +2,7 @@ import { ExamStatusList } from "@/components/phd/ExamStatusList";
 import api from "@/lib/axios-instance";
 import { useQuery } from "@tanstack/react-query";
 
-export default function AnotherExamplePage() {
+export default function QualifyingExamStatus() {
   const { data, isFetching } = useQuery({
     queryKey: ["phd-student-exams"],
     queryFn: async () => {

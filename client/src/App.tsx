@@ -23,6 +23,7 @@ import PhdLayout from "./layouts/Phd/Phd";
 import CourseworkForm from "./views/Phd/DrcConvenor/CourseworkForm";
 import UpdateQualifyingExamDeadline from "./views/Phd/DrcConvenor/UpdateQualifyingExamDeadline";
 import QualifyingExamStatus from "./views/Phd/Student/QualifyingExamStatus";
+import ProposalSubmission from "./views/Phd/Student/ProposalSubmission";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ const App = () => {
                     <Route path="phd-student" element={<PhDStudentLayout />}>
                       <Route path="form-deadline" element={<FormDeadline />} />
                       <Route path="exam-status" element={<QualifyingExamStatus />} />
+                      <Route path="proposal-submission" element={<ProposalSubmission />} />
                     </Route>
                   </Route>
                 </Route>

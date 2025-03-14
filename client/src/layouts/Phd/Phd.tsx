@@ -50,6 +50,11 @@ const NotionalSupervisorLayout = () => {
           icon: <ListBulletIcon />,
           url: "/phd/phd-student/exam-status",
         },
+        {
+          title: "Proposal Submission",
+          icon: <ListBulletIcon />,
+          url: "/phd/phd-student/proposal-submission",
+        },
       ],
     });
   }
