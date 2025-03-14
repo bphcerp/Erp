@@ -1,99 +1,104 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-function App() {
+const API_URL = "http://localhost:5000";
+
+export default function PatentDashboard() {
   const [patents, setPatents] = useState([]);
-  const [newPatent, setNewPatent] = useState({
+  const [formData, setFormData] = useState({
     title: "",
     nationality: "",
-    status: "",
+    status: "filed",
     filing_id: "",
     filing_date: "",
     grant_date: "",
-    inventors: [],
+    inventors: "",
   });
-
-  const fetchPatents = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/Allpatents");
-      const data = await response.json();
-      setPatents(data);
-    } catch (error) {
-      console.error("Error fetching patents:", error);
-    }
-  };
-
-  const addPatent = async (e) => {
-    e.preventDefault();
-    try {
-      await fetch("http://localhost:5000/patents", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPatent),
-      });
-      alert("Patent added successfully!");
-      setNewPatent({
-        title: "",
-        nationality: "",
-        status: "",
-        filing_id: "",
-        filing_date: "",
-        grant_date: "",
-        inventors: [],
-      });
-      fetchPatents();
-    } catch (error) {
-      console.error("Error adding patent:", error);
-    }
-  };
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
     fetchPatents();
   }, []);
 
+  const fetchPatents = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/Allpatents`);
+        setPatents(response.data || []);  // Ensure an empty array is set
+    } catch (error) {
+        console.error("Error fetching patents:", error);
+        setPatents([]);  // Set to an empty array in case of an error
+    }
+  };
+
+
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await axios.post(`${API_URL}/patents`, {
+      ...formData,
+      inventors: formData.inventors.split(","),
+    });
+    fetchPatents();
+  };
+
+  const handleFileUpload = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", file);
+    await axios.post(`${API_URL}/insert-patents`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    fetchPatents();
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6 flex flex-col items-center">
-      <h1 className="text-5xl font-extrabold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">Patent Management</h1>
-      
-      <div className="w-full max-w-3xl p-6 glassmorphism rounded-xl shadow-lg">
-        <h2 className="text-3xl font-semibold mb-4">Add a New Patent</h2>
-        <form onSubmit={addPatent} className="space-y-4">
-          <input type="text" placeholder="Title" value={newPatent.title} onChange={(e) => setNewPatent({ ...newPatent, title: e.target.value })} className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md text-white" required />
-          <select value={newPatent.nationality} onChange={(e) => setNewPatent({ ...newPatent, nationality: e.target.value })} className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md text-white" required>
-            <option value="" disabled>Select Nationality</option>
-            <option value="Indian">Indian</option>
-            <option value="Foreigner">Foreigner</option>
-          </select>
-          <select value={newPatent.status} onChange={(e) => setNewPatent({ ...newPatent, status: e.target.value })} className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md text-white" required>
-            <option value="" disabled>Select Status</option>
-            <option value="filed">Filed</option>
-            <option value="granted">Granted</option>
-          </select>
-          <input type="text" placeholder="Filing ID" value={newPatent.filing_id} onChange={(e) => setNewPatent({ ...newPatent, filing_id: e.target.value })} className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md text-white" required />
-          {newPatent.status === "filed" && <input type="date" value={newPatent.filing_date} onChange={(e) => setNewPatent({ ...newPatent, filing_date: e.target.value })} className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md text-white" required />}
-          {newPatent.status === "granted" && <input type="date" value={newPatent.grant_date} onChange={(e) => setNewPatent({ ...newPatent, grant_date: e.target.value })} className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md text-white" required />}
-          <input type="text" placeholder="Inventors (comma-separated)" value={newPatent.inventors.join(",")} onChange={(e) => setNewPatent({ ...newPatent, inventors: e.target.value.split(",") })} className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md text-white" required />
-          <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 p-3 rounded-md text-white font-bold">Add Patent</button>
-        </form>
+    <div className="p-4 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Patent Management System</h1>
+
+      {/* Patent Form */}
+      <form onSubmit={handleSubmit} className="mb-6 space-y-2">
+        <input className="border p-2 w-full" type="text" name="title" placeholder="Title" onChange={handleInputChange} />
+        <input className="border p-2 w-full" type="text" name="nationality" placeholder="Nationality" onChange={handleInputChange} />
+        <select className="border p-2 w-full" name="status" onChange={handleInputChange}>
+          <option value="filed">Filed</option>
+          <option value="granted">Granted</option>
+        </select>
+        <input className="border p-2 w-full" type="text" name="filing_id" placeholder="Filing ID" onChange={handleInputChange} />
+        <input className="border p-2 w-full" type="date" name="filing_date" placeholder="Filing Date" onChange={handleInputChange} />
+        <input className="border p-2 w-full" type="date" name="grant_date" placeholder="Grant Date" onChange={handleInputChange} disabled={formData.status === "filed"} />
+        <input className="border p-2 w-full" type="text" name="inventors" placeholder="Inventors (comma-separated)" onChange={handleInputChange} />
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full">Add Patent</button>
+      </form>
+
+      {/* File Upload */}
+      <form onSubmit={handleFileUpload} className="mb-6">
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} className="border p-2 w-full" />
+        <button type="submit" className="bg-green-500 text-white p-2 rounded w-full mt-2">Upload Excel File</button>
+      </form>
+
+      {/* Patent List */}
+      <h2 className="text-xl font-bold mb-2">All Patents</h2>
+      <div className="border p-4 rounded">
+        {Array.isArray(patents) && patents.length > 0 ? (
+          patents.map((patent) => (
+            <div key={patent.patent_id || Math.random()} className="border-b py-2">
+              <p><strong>{patent.title || "Untitled"}</strong> ({patent.status || "Unknown"})</p>
+              <p>
+                <small>
+                  Inventors: {patent.inventors_name}
+                </small>
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>No patents available.</p>
+        )}
       </div>
 
-      <div className="mt-8 w-full max-w-4xl">
-        <h2 className="text-3xl font-semibold mb-4">All Patents</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {patents.map((patent) => (
-            <div key={patent.patent_id} className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
-              <h3 className="text-xl font-bold mb-2 text-green-400">{patent.title}</h3>
-              <p><strong>Nationality:</strong> {patent.nationality}</p>
-              <p><strong>Status:</strong> {patent.status}</p>
-              <p><strong>Filing ID:</strong> {patent.filing_id}</p>
-              <p><strong>Filing Date:</strong> {patent.filing_date || "N/A"}</p>
-              <p><strong>Grant Date:</strong> {patent.grant_date || "N/A"}</p>
-              <p><strong>Inventors:</strong> {patent.inventors.map((inventor) => inventor.name).join(", ")}</p>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
-
-export default App;
