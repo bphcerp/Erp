@@ -14,7 +14,7 @@ import ReviewPage from "@/views/QpReview/FacultyReview";
 import PhdLayout from "@/layouts/Phd/Phd";
 import Phd from "@/views/Phd";
 import { allPermissions, permissions } from "lib";
-import { Computer, FileText, GraduationCap } from "lucide-react";
+import { Computer, FileText, GraduationCap,BookOpen } from "lucide-react";
 import {
   BrowserRouter,
   Navigate,
@@ -34,10 +34,12 @@ import CoSupervisedStudents from "@/views/Phd/CoSupervisor/CoSupervisedStudents"
 import SupervisedStudents from "@/views/Phd/Supervisor/SupervisedStudents";
 import UpdateDeadlinesPage from "@/views/Phd/DrcConvenor/UpdateDeadlines";
 import NotFoundPage from "@/layouts/404";
+import CreateApplication from "@/views/Handouts/createApplication";
+import HandoutLayout from "@/layouts/Handouts";
 
 const adminModulePermissions = [
   permissions["/admin/member/search"],
-  permissions["/admin/member/details"],
+  permissions["/admin/member/details"], 
   permissions["/admin/role"],
 ];
 
@@ -46,6 +48,8 @@ const phdModulePermissions: string[] = Object.keys(allPermissions).filter(
 );
 
 const qpReviewModulePermissions: string[] = [];
+
+const courseHandoutsPermissions: string[] = [];
 
 const Routing = () => {
   const { authState, checkAccess, checkAccessAnyOne } = useAuth();
@@ -68,6 +72,12 @@ const Routing = () => {
       icon: <GraduationCap />,
       url: "/phd",
       requiredPermissions: phdModulePermissions,
+    },
+    {
+      title: "Course Handouts",
+      icon: <BookOpen />,
+      url: "/handouts",
+      requiredPermissions: courseHandoutsPermissions,
     },
   ];
 
@@ -132,6 +142,19 @@ const Routing = () => {
                 <Route
                   path="facultyReview/:course"
                   element={<FacultyReview />}
+                />
+              </Route>
+            )}
+
+            {checkAccessAnyOne(courseHandoutsPermissions) && (
+              <Route path="/handouts" element={<HandoutLayout  />}>
+                <Route
+                  index
+                  element={<Navigate to="/handouts/createapplication" />}
+                />
+                <Route
+                  path="createapplication"
+                  element={<CreateApplication />}
                 />
               </Route>
             )}
