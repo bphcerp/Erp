@@ -3,5 +3,8 @@
 		"patchedDependencies": {
 			"drizzle-orm@0.40.0": "patches/drizzle-orm@0.40.0.patch"
 		}
+	},
+	"dependencies": {
+		"react-scripts": "^5.0.1"
 	}
 }

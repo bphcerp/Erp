@@ -1,4 +1,3 @@
-// createApplication.tsx
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
