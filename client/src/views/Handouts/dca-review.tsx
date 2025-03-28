@@ -20,12 +20,12 @@ interface HandoutReviewFormValues {
 }
 
 const DCAMemberReviewForm: React.FC = () => {
-  const { handoutId } = useParams<{ handoutId: string }>();
+  const params = useParams();
   const queryClient = useQueryClient();
 
   const { handleSubmit, register, control } = useForm<HandoutReviewFormValues>({
     defaultValues: {
-      handoutId: handoutId || "",
+      handoutId: params.handoutId || "",
       scopeAndObjective: false,
       textBookPrescribed: false,
       lecturewisePlanLearningObjective: false,
@@ -37,7 +37,7 @@ const DCAMemberReviewForm: React.FC = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: HandoutReviewFormValues) => {
-      await api.post("/handout/dca/review", data);
+      await api.post(`/handout/dca/review?id=${params.handoutId}`, data);
     },
     onSuccess: async () => {
       toast.success("Handout review successfully submitted");
@@ -64,7 +64,7 @@ const DCAMemberReviewForm: React.FC = () => {
         Review the handout and approve or reject each section.
       </p>
 
-      <form onSubmit={() => handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <input type="hidden" {...register("handoutId")} />
 
         <div className="space-y-4">
