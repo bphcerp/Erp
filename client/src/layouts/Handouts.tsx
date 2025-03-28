@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/components/AppSidebar";
 import { ReaderIcon } from "@radix-ui/react-icons";
 import { permissions } from "lib";
+import { Newspaper, Upload } from "lucide-react";
 import { Outlet } from "react-router-dom";
 
 const HandoutLayout = () => {
@@ -17,6 +18,11 @@ const HandoutLayout = () => {
                 url: "/handout/faculty",
                 requiredPermissions: [permissions["/handout/faculty/get"]],
               },
+              {
+                title: "Upload Handout",
+                icon: <Upload />,
+                url: "/handout/submit/:id",
+              },
             ],
           },
           {
@@ -27,6 +33,11 @@ const HandoutLayout = () => {
                 icon: <ReaderIcon />,
                 url: "/handout/dca",
                 requiredPermissions: [permissions["/handout/dca/get"]],
+              },
+              {
+                title: "Review Handouts",
+                icon: <Newspaper />,
+                url: "/handout/dca/review/:id",
               },
             ],
           },
