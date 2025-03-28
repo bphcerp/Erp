@@ -156,7 +156,7 @@ const GetAllHandoutsDCA: React.FC = () => {
                           variant="outline"
                           className="hover:bg-primary hover:text-white"
                         >
-                          <Link to={`/handout-review/${handout.id}`}>Review</Link>
+                          <Link to={`/handout/dca/review/${handout.id}`}>Review</Link>
                         </Button>
                       </TableCell>
                     </TableRow>

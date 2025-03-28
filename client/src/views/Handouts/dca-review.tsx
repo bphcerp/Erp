@@ -25,7 +25,7 @@ const DCAMemberReviewForm: React.FC = () => {
 
   const { handleSubmit, register, control } = useForm<HandoutReviewFormValues>({
     defaultValues: {
-      handoutId: params.handoutId || "",
+      handoutId: params.id,
       scopeAndObjective: false,
       textBookPrescribed: false,
       lecturewisePlanLearningObjective: false,
