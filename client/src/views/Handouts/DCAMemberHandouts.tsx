@@ -22,6 +22,7 @@ interface Handout {
   courseCode: string;
   professorName?: string;
   submittedOn: string;
+  date: string; // Added date attribute
   status: string;
   category: "HD" | "FD";
   semester: string;
@@ -35,6 +36,7 @@ const dummyHandouts: Handout[] = [
     courseCode: "CS101",
     professorName: "Dr. Smith",
     submittedOn: "2025-03-15",
+    date: "2025-03-16", // Added date value
     status: "pending",
     category: "HD",
     semester: "2nd Semester, 2024-25"
@@ -45,6 +47,7 @@ const dummyHandouts: Handout[] = [
     courseCode: "CS201",
     professorName: "Dr. Johnson",
     submittedOn: "2025-03-20",
+    date: "2025-03-21", // Added date value
     status: "approved",
     category: "FD",
     semester: "2nd Semester, 2024-25"
@@ -55,6 +58,7 @@ const dummyHandouts: Handout[] = [
     courseCode: "CS301",
     professorName: "Dr. Williams",
     submittedOn: "2025-03-10",
+    date: "2025-03-11", // Added date value
     status: "rejected",
     category: "HD",
     semester: "2nd Semester, 2024-25"
@@ -65,6 +69,7 @@ const dummyHandouts: Handout[] = [
     courseCode: "CS302",
     professorName: "Dr. Brown",
     submittedOn: "2025-03-05",
+    date: "2025-03-06", // Added date value
     status: "notsubmitted",
     category: "HD",
     semester: "2nd Semester, 2024-25"
@@ -75,6 +80,7 @@ const dummyHandouts: Handout[] = [
     courseCode: "CS401",
     professorName: "Dr. Davis",
     submittedOn: "2025-03-25",
+    date: "2025-03-26", // Added date value
     status: "pending",
     category: "FD",
     semester: "2nd Semester, 2024-25"
@@ -123,6 +129,11 @@ const DCAMemberHandouts: React.FC = () => {
         header: "Reviewer",
         cell: (info) => info.getValue() || "Unassigned",
       }),
+      
+      columnHelper.accessor("date", { // Added date column before status
+        header: "Date",
+        cell: (info) => info.getValue(),
+      }),
       columnHelper.accessor("status", {
         header: "Current Status",
         cell: (info) => {
@@ -147,7 +158,6 @@ const DCAMemberHandouts: React.FC = () => {
               variant="outline"
               className="whitespace-nowrap hover:bg-primary hover:text-white border-gray-300"
             >
-              {/*is this the right link?*/}
               <Link to={`/handout/dca/review/${handout.id}`}>
                 Review
               </Link> 
