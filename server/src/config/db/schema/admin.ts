@@ -57,6 +57,7 @@ export const faculty = pgTable("faculty", {
         .default(sql`'{}'::text[]`),
     room: text("room"),
     phone: text("phone"),
+    authorId: text("author_id").unique(),
 });
 
 export const phd = pgTable("phd", {
@@ -99,10 +100,18 @@ export const phd = pgTable("phd", {
     qualifyingExam1: boolean("qualifying_exam_1"),
     qualifyingExam2: boolean("qualifying_exam_2"),
 
-    qualifyingExam1StartDate: timestamp("qualifying_exam_1_start_date").default(sql`NULL`),
-    qualifyingExam1EndDate: timestamp("qualifying_exam_1_end_date").default(sql`NULL`),
-    qualifyingExam2StartDate: timestamp("qualifying_exam_2_start_date").default(sql`NULL`), 
-    qualifyingExam2EndDate: timestamp("qualifying_exam_2_end_date").default(sql`NULL`),
+    qualifyingExam1StartDate: timestamp("qualifying_exam_1_start_date").default(
+        sql`NULL`
+    ),
+    qualifyingExam1EndDate: timestamp("qualifying_exam_1_end_date").default(
+        sql`NULL`
+    ),
+    qualifyingExam2StartDate: timestamp("qualifying_exam_2_start_date").default(
+        sql`NULL`
+    ),
+    qualifyingExam2EndDate: timestamp("qualifying_exam_2_end_date").default(
+        sql`NULL`
+    ),
 
     qualifyingArea1: text("qualifying_area_1").default(sql`NULL`),
     qualifyingArea2: text("qualifying_area_2").default(sql`NULL`),
