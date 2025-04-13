@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/AppSidebar";
-import { ReaderIcon } from "@radix-ui/react-icons";
+import { ReaderIcon,ListBulletIcon } from "@radix-ui/react-icons";
+import { List } from "@radix-ui/react-tabs";
 import { permissions } from "lib";
 import { Outlet } from "react-router-dom";
 
@@ -15,6 +16,12 @@ const HandoutLayout = () => {
                 title: "Handouts",
                 icon: <ReaderIcon />,
                 url: "/handout/faculty",
+                requiredPermissions: [permissions["/handout/faculty/get"]],
+              },
+              {
+                title: "Preference",
+                icon: <ListBulletIcon />,
+                url: "/handout/faculty/preference",
                 requiredPermissions: [permissions["/handout/faculty/get"]],
               },
             ],

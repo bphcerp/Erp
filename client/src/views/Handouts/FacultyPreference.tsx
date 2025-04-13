@@ -80,7 +80,6 @@ export const FacultyPreference: React.FC = () => {
     };
 
     return (
-        // Outer container takes the full viewport height and prevents page scrolling.
         <div className="w-full h-screen overflow-hidden space-y-6 p-8">
             <div>
                 <h1 className="text-3xl font-bold text-primary">
@@ -132,6 +131,7 @@ export const FacultyPreference: React.FC = () => {
                 
                 <div className="w-3/4">
                     <h3 className="font-medium mb-2">Selected Courses</h3>
+                    <Separator className="mb-2"/>
                     <div className="rounded-lg h-600px overflow-y-auto">
                         <Table>
                             <TableHeader>
