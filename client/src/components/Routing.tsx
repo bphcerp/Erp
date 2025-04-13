@@ -57,6 +57,7 @@ import ConferencePendingApplicationsView from "@/views/Conference/Pending";
 import ConferenceEditView from "@/views/Conference/Submitted/[id]";
 import PublicationsLayout from "@/layouts/Publications";
 import YourPublications from "@/views/Publications/YourPublications";
+import FacultyPreference from "@/views/Handouts/FacultyPreference";
 
 const adminModulePermissions = [
   permissions["/admin/member/search"],
@@ -237,6 +238,9 @@ const Routing = () => {
                   )}
                 {checkAccess(permissions["/handout/get"]) && (
                   <Route path=":id" element={<FacultyHandout />} />
+                )}
+                {checkAccess(permissions["/handout/get"]) && (
+                  <Route path="faculty/preference" element={<FacultyPreference/>}/>
                 )}
                 {checkAccess(permissions["/handout/dca/get"]) && (
                   <>
