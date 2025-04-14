@@ -14,19 +14,44 @@ import { permissions } from "lib";
 const NotionalSupervisorLayout = () => {
   const items = [
     {
+      title: "Instructor",
+      items: [
+        {
+          title: "Update Student Grades",
+          icon: <CaseUpper />,
+          url: "/phd/notional-supervisor/update-student-grades",
+          requiredPermissions: [
+            permissions["/phd/notionalSupervisor/updateCourseGrade"],
+          ],
+        },
+      ],
+    },
+    {
       title: "Notional Supervisor",
       items: [
         {
           title: "Update Grade",
           icon: <CaseUpper />,
           url: "/phd/notional-supervisor/update-grade",
-          requiredPermissions: [permissions["/phd/supervisor/updateSuggestedExaminer"]],
+          requiredPermissions: [
+            permissions["/phd/notionalSupervisor/updateCourseGrade"],
+          ],
+        },
+        {
+          title: "Update Student Grades",
+          icon: <CaseUpper />,
+          url: "/phd/notional-supervisor/update-student-grades",
+          requiredPermissions: [
+            permissions["/phd/notionalSupervisor/updateCourseGrade"],
+          ],
         },
         {
           title: "Suggest Examiner",
           icon: <UserRoundPlus />,
           url: "/phd/notional-supervisor/suggest-examiner",
-          requiredPermissions: [permissions["/phd/notionalSupervisor/updateCourseGrade"]],
+          requiredPermissions: [
+            permissions["/phd/supervisor/updateSuggestedExaminer"],
+          ],
         },
       ],
     },
@@ -53,7 +78,9 @@ const NotionalSupervisorLayout = () => {
           title: "QE Application details",
           icon: <NotepadText />,
           url: "/phd/drc-convenor/phd-that-applied-for-qualifying-exam",
-          requiredPermissions: [permissions["/phd/drcMember/getPhdDataOfWhoFilledApplicationForm"]],
+          requiredPermissions: [
+            permissions["/phd/drcMember/getPhdDataOfWhoFilledApplicationForm"],
+          ],
         },
         {
           title: "Assign Examiner",
@@ -78,7 +105,7 @@ const NotionalSupervisorLayout = () => {
           url: "/phd/phd-student/form-deadline",
           requiredPermissions: [permissions["/phd/student/checkExamStatus"]],
         },
-        
+
         {
           title: "Proposal Submission",
           icon: <NotepadText />,
@@ -94,21 +121,26 @@ const NotionalSupervisorLayout = () => {
           title: "Update sem dates",
           icon: <CalendarX2 />,
           url: "/phd/staff/update-semester-dates",
-          requiredPermissions: [
-            permissions["/phd/staff/getAllSem"],
-          ],
+          requiredPermissions: [permissions["/phd/staff/getAllSem"]],
         },
         {
           title: "Update Deadlines",
           icon: <CalendarClockIcon />,
           url: "/phd/staff/update-deadlines",
-          requiredPermissions: [permissions["/phd/staff/updateQualifyingExamDeadline"], permissions["/phd/staff/updateProposalDeadline"]],
+          requiredPermissions: [
+            permissions["/phd/staff/updateQualifyingExamDeadline"],
+            permissions["/phd/staff/updateProposalDeadline"],
+          ],
         },
         {
           title: "Update Sub Areas",
           icon: <CalendarClockIcon />,
           url: "/phd/staff/update-subareas",
-          requiredPermissions: [permissions["/phd/staff/updateSubAreas"], permissions["/phd/staff/getSubAreas"], permissions["/phd/staff/deleteSubArea"]],
+          requiredPermissions: [
+            permissions["/phd/staff/updateSubAreas"],
+            permissions["/phd/staff/getSubAreas"],
+            permissions["/phd/staff/deleteSubArea"],
+          ],
         },
       ],
     },
@@ -119,7 +151,9 @@ const NotionalSupervisorLayout = () => {
           title: "Supervised Students",
           icon: <Users />,
           url: "/phd/phd-supervisor/supervised-students",
-          requiredPermissions: [permissions["/phd/supervisor/getSupervisedStudents"]],
+          requiredPermissions: [
+            permissions["/phd/supervisor/getSupervisedStudents"],
+          ],
         },
       ],
     },
@@ -130,7 +164,9 @@ const NotionalSupervisorLayout = () => {
           title: "Co-Supervised Students",
           icon: <Users />,
           url: "/phd/phd-co-supervisor/co-supervised-students",
-          requiredPermissions: [permissions["/phd/coSupervisor/getCoSupervisedStudents"]],
+          requiredPermissions: [
+            permissions["/phd/coSupervisor/getCoSupervisedStudents"],
+          ],
         },
       ],
     },

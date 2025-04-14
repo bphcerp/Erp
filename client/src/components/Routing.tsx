@@ -57,6 +57,7 @@ import ConferencePendingApplicationsView from "@/views/Conference/Pending";
 import ConferenceEditView from "@/views/Conference/Submitted/[id]";
 import PublicationsLayout from "@/layouts/Publications";
 import YourPublications from "@/views/Publications/YourPublications";
+import UpdateStudentGrades from "@/views/Phd/NotionalSupervisor/UpdateStudentGrades";
 
 const adminModulePermissions = [
   permissions["/admin/member/search"],
@@ -288,6 +289,10 @@ const Routing = () => {
                 ) && (
                   <Route path="notional-supervisor" element={<Outlet />}>
                     <Route path="update-grade" element={<UpdateGrade />} />
+                    <Route
+                      path="update-student-grades"
+                      element={<UpdateStudentGrades />}
+                    />
                     <Route
                       path="suggest-examiner"
                       element={<SuggestExaminer />}
