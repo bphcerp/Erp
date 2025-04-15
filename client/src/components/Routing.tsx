@@ -11,6 +11,7 @@ import DCARequestsView from "@/views/QpReview/DCARequests";
 import FacultyReview from "@/views/QpReview/FacultyReview/[course]";
 import ReviewPage from "@/views/QpReview/FacultyReview";
 import PhdLayout from "@/layouts/Phd/Phd";
+import UploadExcel from "../views/Phd/Staff/UploadExcel";
 import { allPermissions, permissions } from "lib";
 import {
   Computer,
@@ -134,6 +135,7 @@ const Routing = () => {
       }}
     >
       <Routes>
+        <Route path="/phd/staff/upload-excel" element={<UploadExcel />} />
         <Route
           path="/"
           element={

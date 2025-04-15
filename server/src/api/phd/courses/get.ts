@@ -33,6 +33,7 @@ export const phdCourseSchema = z.object({
     instructor: z.string().optional(),
 
     topicOfResearchPractice: z.string().optional(),
+    topicOfResearchProject: z.string().optional(),
     topicOfCourseWork: z.string().optional(),
     title: z.string().optional(),
 
@@ -62,6 +63,7 @@ router.get(
                 courseType: phdCoursesNew.courseType,
                 instructor: phdCoursesNew.instructor,
                 topicOfResearchPractice: phdCoursesNew.topicOfResearchPractice,
+                topicOfResearchProject: phdCoursesNew.topicOfResearchProject,
                 topicOfCourseWork: phdCoursesNew.topicOfCourseWork,
                 title: phdCoursesNew.title,
                 supervisor: phdCoursesNew.supervisor,

@@ -93,6 +93,7 @@ export const phdCoursesNew = pgTable(
         courseType: courseTypeEnum("course_type").notNull(),
 
         topicOfResearchPractice: text("topic_of_research_practice"),
+        topicOfResearchProject: text("topic_of_research_project"),
         topicOfCourseWork: text("topic_of_course_work"),
         title: text("title"),
 
