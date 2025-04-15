@@ -76,6 +76,7 @@ export const allPermissions = {
     "phd:staff:delete-sub-area": "",
     "phd:staff:get-sub-area": "",
     "phd:staff:update-sub-area": "",
+    "phd:staff:upload-excel-courses": "",
 
     "handout:faculty:submit": "",
     "handout:dca-convenor:assignreviewer": "",
@@ -198,7 +199,7 @@ export const permissions = {
     //staff
     "/phd/staff/updateSemesterDates": "phd:staff:update-semester-dates",
     "/phd/staff/getAllSem": "phd:staff:get-all-semester",
-
+    
     "/phd/staff/updateProposalDeadline": "phd:staff:update-proposal-deadline",
     "/phd/staff/getAllQualifyingExamForTheSem":
         "phd:staff:get-all-qualifying-exam-for-the-semester",
@@ -208,6 +209,7 @@ export const permissions = {
     "/phd/staff/deleteSubArea": "phd:staff:delete-sub-area",
     "/phd/staff/getSubAreas": "phd:staff:get-sub-area",
     "/phd/staff/updateSubAreas": "phd:staff:update-sub-area",
+    "/phd/staff/uploadExcelCourses": "phd:staff:upload-excel-courses",
 
     //Handout
     "/handout/faculty/submit": "handout:faculty:submit",
