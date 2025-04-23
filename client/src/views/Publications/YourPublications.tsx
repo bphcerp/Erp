@@ -20,6 +20,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 type CoAuthor = {
   authorId: string;
@@ -37,6 +39,7 @@ type Publication = {
   status: boolean;
   citations: string;
   citationId: string;
+  authorNames: string;
   coAuthors: CoAuthor[];
 };
 
@@ -52,6 +55,13 @@ const PublicationsView = () => {
   const [publications, setPublications] = useState<Publication[]>([]);
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [yearRangeFilter, setYearRangeFilter] = useState<{
+    min: number | null;
+    max: number | null;
+  }>({
+    min: null,
+    max: null,
+  });
 
   const {
     data: authorId,
@@ -84,6 +94,7 @@ const PublicationsView = () => {
           params: { authorId },
         }
       );
+      console.log("Publications response:", response.data);
       setPublications(response.data.publications);
       return response.data;
     },
@@ -125,9 +136,19 @@ const PublicationsView = () => {
 
   const filteredPublications = publications
     .filter((pub) => {
+      // Status filter
       if (statusFilter === "all") return true;
       if (statusFilter === "approved") return pub.status === true;
       if (statusFilter === "rejected") return pub.status === false;
+      return true;
+    })
+    .filter((pub) => {
+      // Year range filter
+      const pubYear = Number(pub.year);
+      if (yearRangeFilter.min !== null && pubYear < yearRangeFilter.min)
+        return false;
+      if (yearRangeFilter.max !== null && pubYear > yearRangeFilter.max)
+        return false;
       return true;
     })
     .sort((a, b) => {
@@ -140,7 +161,40 @@ const PublicationsView = () => {
     let count = 0;
     if (sortOrder !== "desc") count++;
     if (statusFilter !== "all") count++;
+    if (yearRangeFilter.min !== null) count++;
+    if (yearRangeFilter.max !== null) count++;
     return count;
+  };
+
+  const exportToExcel = () => {
+    const data = filteredPublications.map((pub) => ({
+      Title: pub.title,
+      Type: pub.type,
+      Journal: pub.journal,
+      Volume: pub.volume ?? "",
+      Issue: pub.issue ?? "",
+      Year: pub.year,
+      Link: pub.link,
+      Status: pub.status ? "Approved" : "Rejected",
+      Citations: pub.citations,
+      CitationID: pub.citationId,
+      CoAuthors: pub.coAuthors
+        .map((ca) => `${ca.authorName} (ID: ${ca.authorId})`)
+        .join(", "),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Publications");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, "publications.xlsx");
   };
 
   return (
@@ -154,83 +208,145 @@ const PublicationsView = () => {
       ) : (
         <>
           <div className="flex w-full items-center justify-between">
-            <h1 className="text-3xl font-bold text-primary">My Publications</h1>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Filter className="h-4 w-4" />
-                  Filter
-                  {getActiveFilterCount() > 0 && (
-                    <Badge className="ml-1 flex h-5 w-5 items-center justify-center p-0">
-                      {getActiveFilterCount()}
-                    </Badge>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Filter Publications</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+            <h1 className="whitespace-nowrap text-3xl font-bold text-primary">
+              My Publications
+            </h1>
+            <div className="row flex w-full justify-end gap-4">
+              <Button variant="outline" size="sm" onClick={exportToExcel}>
+                Download as Excel
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Filter className="h-4 w-4" />
+                    Filter
+                    {getActiveFilterCount() > 0 && (
+                      <Badge className="ml-1 flex h-5 w-5 items-center justify-center p-0">
+                        {getActiveFilterCount()}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Filter Publications</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
 
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                    Sort by Year
-                  </DropdownMenuLabel>
-                  <DropdownMenuRadioGroup
-                    value={sortOrder}
-                    onValueChange={(value) => setSortOrder(value as SortOrder)}
-                  >
-                    <DropdownMenuRadioItem value="desc">
-                      <ArrowUpDown className="mr-2 h-4 w-4 rotate-180" />
-                      Newest first
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="asc">
-                      <ArrowUpDown className="mr-2 h-4 w-4" />
-                      Oldest first
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuGroup>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                    Filter by Status
-                  </DropdownMenuLabel>
-                  <DropdownMenuRadioGroup
-                    value={statusFilter}
-                    onValueChange={(value) =>
-                      setStatusFilter(value as StatusFilter)
-                    }
-                  >
-                    <DropdownMenuRadioItem value="all">
-                      All publications
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="approved">
-                      <Check className="mr-2 h-4 w-4 text-green-600" />
-                      Approved only
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="rejected">
-                      <X className="mr-2 h-4 w-4 text-red-600" />
-                      Rejected only
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuGroup>
-
-                {getActiveFilterCount() > 0 && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSortOrder("desc");
-                        setStatusFilter("all");
-                      }}
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                      Sort by Year
+                    </DropdownMenuLabel>
+                    <DropdownMenuRadioGroup
+                      value={sortOrder}
+                      onValueChange={(value) =>
+                        setSortOrder(value as SortOrder)
+                      }
                     >
-                      Reset filters
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                      <DropdownMenuRadioItem value="desc">
+                        <ArrowUpDown className="mr-2 h-4 w-4 rotate-180" />
+                        Newest first
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="asc">
+                        <ArrowUpDown className="mr-2 h-4 w-4" />
+                        Oldest first
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuGroup>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                      Filter by Status
+                    </DropdownMenuLabel>
+                    <DropdownMenuRadioGroup
+                      value={statusFilter}
+                      onValueChange={(value) =>
+                        setStatusFilter(value as StatusFilter)
+                      }
+                    >
+                      <DropdownMenuRadioItem value="all">
+                        All publications
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="approved">
+                        <Check className="mr-2 h-4 w-4 text-green-600" />
+                        Approved only
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="rejected">
+                        <X className="mr-2 h-4 w-4 text-red-600" />
+                        Rejected only
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuGroup>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                      Filter by Year Range
+                    </DropdownMenuLabel>
+                    <div className="px-2 py-1.5">
+                      <div className="mb-2 flex items-center gap-2">
+                        <label htmlFor="min-year" className="text-xs">
+                          From:
+                        </label>
+                        <input
+                          id="min-year"
+                          type="number"
+                          placeholder="Min year"
+                          className="w-full rounded-md border px-2 py-1 text-sm"
+                          value={yearRangeFilter.min || ""}
+                          onChange={(e) => {
+                            const value = e.target.value
+                              ? Number(e.target.value)
+                              : null;
+                            setYearRangeFilter((prev) => ({
+                              ...prev,
+                              min: value,
+                            }));
+                          }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <label htmlFor="max-year" className="text-xs">
+                          To:
+                        </label>
+                        <input
+                          id="max-year"
+                          type="number"
+                          placeholder="Max year"
+                          className="w-full rounded-md border px-2 py-1 text-sm"
+                          value={yearRangeFilter.max || ""}
+                          onChange={(e) => {
+                            const value = e.target.value
+                              ? Number(e.target.value)
+                              : null;
+                            setYearRangeFilter((prev) => ({
+                              ...prev,
+                              max: value,
+                            }));
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </DropdownMenuGroup>
+
+                  {getActiveFilterCount() > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSortOrder("desc");
+                          setStatusFilter("all");
+                          setYearRangeFilter({ min: null, max: null });
+                        }}
+                      >
+                        Reset filters
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
 
           <div className="w-full space-y-6">
@@ -242,7 +358,7 @@ const PublicationsView = () => {
                 return (
                   <div key={pub.citationId} className="mb-6 border-b pb-4">
                     <p className="mb-2 text-justify text-base">
-                      [{index + 1}] {authors && `${authors}, `}&quot;{pub.title}
+                      [{index + 1}] {pub.authorNames} {", "} &quot;{pub.title}
                       ,&quot; <em>{pub.journal}</em>, vol. {pub.volume ?? "N/A"}
                       , no. {pub.issue ?? "N/A"}, {pub.year}.
                     </p>
