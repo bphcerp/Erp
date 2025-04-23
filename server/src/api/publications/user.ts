@@ -79,6 +79,7 @@ router.get(
             const response = {
                 publications: Array.from(publicationsMap.values()),
             };
+            console.log("Response: ", response);
             data = response;
         }
 
