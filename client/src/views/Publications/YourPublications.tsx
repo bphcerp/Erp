@@ -22,6 +22,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { Input } from "@/components/ui/input";
 
 type CoAuthor = {
   authorId: string;
@@ -362,7 +363,7 @@ const PublicationsView = () => {
                       ,&quot; <em>{pub.journal}</em>, vol. {pub.volume ?? "N/A"}
                       , no. {pub.issue ?? "N/A"}, {pub.year}.
                     </p>
-                    <div className="mt-2 flex gap-2">
+                    <div className="mt-2 flex gap-2 row">
                       {pub.status === null ? (
                         <>
                           <Button
@@ -401,6 +402,12 @@ const PublicationsView = () => {
                           <span>Rejected</span>
                         </div>
                       )}
+                      <Input
+                      type="comments"
+                      placeholder="Add Comments"
+                      onChange={(e: any) => console.log(e.target.value)}
+                      className="w-full border-gray-300 pl-4 sm:w-96"
+                    />
                     </div>
                   </div>
                 );
