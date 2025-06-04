@@ -1,3 +1,5 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axios-instance";
 import { useState } from "react";
@@ -23,6 +25,16 @@ import { Badge } from "@/components/ui/badge";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogDescription,
+  DialogClose,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 type CoAuthor = {
   authorId: string;
@@ -37,7 +49,7 @@ type Publication = {
   issue: string | null;
   year: string;
   link: string;
-  status: boolean;
+  status: boolean | null;
   citations: string;
   citationId: string;
   authorNames: string;
@@ -53,6 +65,8 @@ type StatusFilter = "all" | "approved" | "rejected";
 
 const PublicationsView = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [approveComment, setApproveComment] = useState<string>("");
+  const [rejectComment, setRejectComment] = useState<string>("");
   const [publications, setPublications] = useState<Publication[]>([]);
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -95,7 +109,6 @@ const PublicationsView = () => {
           params: { authorId },
         }
       );
-      console.log("Publications response:", response.data);
       setPublications(response.data.publications);
       return response.data;
     },
@@ -109,13 +122,17 @@ const PublicationsView = () => {
       citationId: string;
       authorId: string;
       status: boolean;
+      comments?: string;
     }) => {
       await api.post("/publications/updateStatus", data);
     },
     onSuccess: () => {
-      toast.success("Edited successfully");
+      toast.success("Status updated successfully");
+      setApproveComment("");
+      setRejectComment("");
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Error updating status:", error);
       toast.error("Error while updating status");
     },
   });
@@ -123,7 +140,8 @@ const PublicationsView = () => {
   function handleApproveClick(
     citationId: string,
     authorId: string,
-    status: boolean
+    status: boolean,
+    comments?: string
   ) {
     const updatedPublications = publications.map((pub) => {
       if (pub.citationId === citationId) {
@@ -132,7 +150,17 @@ const PublicationsView = () => {
       return pub;
     });
     setPublications(updatedPublications);
-    editStatusMutation.mutate({ citationId, authorId, status });
+
+    // Prepare data for backend
+    const requestData = {
+      citationId,
+      authorId,
+      status,
+      ...(comments && comments.trim() !== "" && { comments: comments.trim() }),
+    };
+
+    console.log("Submitting with data:", requestData); // Debug log
+    editStatusMutation.mutate(requestData);
   }
 
   const filteredPublications = publications
@@ -363,7 +391,7 @@ const PublicationsView = () => {
                       ,&quot; <em>{pub.journal}</em>, vol. {pub.volume ?? "N/A"}
                       , no. {pub.issue ?? "N/A"}, {pub.year}.
                     </p>
-                    <div className="mt-2 flex gap-2 row">
+                    <div className="row mt-2 flex gap-2">
                       {pub.status === null ? (
                         <>
                           <Button
@@ -376,20 +404,132 @@ const PublicationsView = () => {
                             <Check className="mr-1 h-4 w-4" />
                             Approve
                           </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              handleApproveClick(
-                                pub.citationId,
-                                authorId,
-                                false
-                              )
-                            }
-                          >
-                            <X className="mr-1 h-4 w-4" />
-                            Reject
-                          </Button>
+
+                          {/* Approve with comments dialog */}
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setApproveComment("");
+                                }}
+                              >
+                                <Check className="mr-1 h-4 w-4" />
+                                Approve with comments
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                              <DialogHeader>
+                                <DialogTitle>Approve with Comments</DialogTitle>
+                                <DialogDescription>
+                                  Add comments for this approval. These will be
+                                  visible to the admin.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="grid gap-4">
+                                <Input
+                                  type="text"
+                                  placeholder="Add your approval comments..."
+                                  value={approveComment}
+                                  onChange={(e) =>
+                                    setApproveComment(e.target.value)
+                                  }
+                                  className="w-full"
+                                />
+                              </div>
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button variant="outline">Cancel</Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                  <Button
+                                    type="submit"
+                                    onClick={() => {
+                                      if (approveComment.trim() === "") {
+                                        toast.error(
+                                          "Please add comments before approving."
+                                        );
+                                        return;
+                                      }
+                                      handleApproveClick(
+                                        pub.citationId,
+                                        authorId,
+                                        true,
+                                        approveComment
+                                      );
+                                    }}
+                                  >
+                                    Approve with Comments
+                                  </Button>
+                                </DialogClose>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+
+                          {/* Reject with comments dialog */}
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setRejectComment("");
+                                }}
+                              >
+                                <X className="mr-1 h-4 w-4" />
+                                Reject with comments
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                              <DialogHeader>
+                                <DialogTitle>Reject with Comments</DialogTitle>
+                                <DialogDescription>
+                                  Add comments explaining why this publication
+                                  is being rejected. These will be visible to
+                                  the admin.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="grid gap-4">
+                                <Input
+                                  type="text"
+                                  placeholder="Add your rejection comments..."
+                                  value={rejectComment}
+                                  onChange={(e) =>
+                                    setRejectComment(e.target.value)
+                                  }
+                                  className="w-full"
+                                />
+                              </div>
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button variant="outline">Cancel</Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                  <Button
+                                    type="submit"
+                                    variant="destructive"
+                                    onClick={() => {
+                                      if (rejectComment.trim() === "") {
+                                        toast.error(
+                                          "Please add comments before rejecting."
+                                        );
+                                        return;
+                                      }
+                                      handleApproveClick(
+                                        pub.citationId,
+                                        authorId,
+                                        false,
+                                        rejectComment
+                                      );
+                                    }}
+                                  >
+                                    Reject with Comments
+                                  </Button>
+                                </DialogClose>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         </>
                       ) : pub.status === true ? (
                         <div className="flex items-center text-green-600">
@@ -402,12 +542,6 @@ const PublicationsView = () => {
                           <span>Rejected</span>
                         </div>
                       )}
-                      <Input
-                      type="comments"
-                      placeholder="Add Comments"
-                      onChange={(e: any) => console.log(e.target.value)}
-                      className="w-full border-gray-300 pl-4 sm:w-96"
-                    />
                     </div>
                   </div>
                 );

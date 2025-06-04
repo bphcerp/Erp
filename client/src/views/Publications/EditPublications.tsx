@@ -32,7 +32,25 @@ type Publication = {
   citationId: string;
   authorNames: string;
   coAuthors: CoAuthor[];
+  comments?: string | null;
 };
+
+import { z } from "zod";
+
+const PublicationSchema = z.object({
+  citationId: z.string(),
+  title: z.string(),
+  type: z.string().nullable(),
+  status: z.boolean().nullable(),
+  journal: z.string().nullable(),
+  volume: z.string().nullable(),
+  issue: z.string().nullable(),
+  year: z.string().nullable(),
+  link: z.string().nullable(),
+  citations: z.string().nullable(),
+  authorNames: z.string().nullable(),
+  comments: z.string().nullable(),
+});
 
 type PublicationResponse = {
   publications: Publication[];
@@ -65,12 +83,17 @@ const AllPublications = () => {
 
   const updatePublicationMutation = useMutation({
     mutationFn: async (publication: Publication) => {
-      const response = await api.put(
-        `/publications/${publication.citationId}`,
-        publication
-      );
+      const filteredPublication = PublicationSchema.parse(publication);
+
+      console.log("Filtered publication:", filteredPublication);
+
+      const response = await api.patch("/publications/edit", {
+        publication: filteredPublication,
+      });
+
       return response.data;
     },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["publications/all"] });
       toast.success("Publication updated successfully");
@@ -143,6 +166,7 @@ const AllPublications = () => {
                 <TableHead>Volume</TableHead>
                 <TableHead>Issue</TableHead>
                 <TableHead>Year</TableHead>
+                <TableHead>Comments</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -258,6 +282,9 @@ const AllPublications = () => {
                         ) : (
                           publication.year
                         )}
+                      </TableCell>
+                      <TableCell>
+                        {publication.comments ? publication.comments : "N/A"}
                       </TableCell>
                       <TableCell className="text-right">
                         {isEditing ? (
